@@ -4,6 +4,8 @@
 #include <string.h>
 
 #define HASH_SIZE 256
+#define MAX_WORD_LENGTH 100
+#define MAX_TEXT_LENGTH 500010
 
 typedef struct _list {
     int startNode;
@@ -125,8 +127,63 @@ void buildSuffixLinks(Trie T) {
     }
 }
 
-void searchPatterns(Trie T, unsigned char *text) {
+char **extraire_mots_fichier(const char *fichier, int *nombre_mots) {
+    FILE *f = fopen(fichier, "r");
+    if (f == NULL) {
+        fprintf(stderr, "hello Erreur lors de l'ouverture du fichier %s\n", fichier);
+        exit(EXIT_FAILURE);
+    }
+    char **mots = NULL;
+    int count = 0;
+    char ligne[100];
+    while (fgets(ligne, sizeof(ligne), f)) {
+        // Supprimer les retours à la ligne
+        ligne[strcspn(ligne, "\r\n")] = 0;
+
+        // Diviser la ligne en mots
+        char *mot = strtok(ligne, " ");
+        while (mot != NULL) {
+            mots = realloc(mots, (count + 1) * sizeof(char *));
+            mots[count] = strdup(mot);
+            count++;
+            mot = strtok(NULL, " ");
+        }
+    }
+
+    fclose(f);
+    *nombre_mots = count;
+    return mots;
+}
+
+char *lire_texte_fichier(const char *fichier) {
+
+    FILE *f = fopen(fichier, "r");
+    if (f == NULL) {
+        fprintf(stderr, " ici Erreur lors de l'ouverture du fichier %s\n", fichier);
+        exit(EXIT_FAILURE);
+    }
+
+    fseek(f, 0, SEEK_END);
+    long taille_fichier = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char *texte = malloc(taille_fichier + 1);
+    if (texte == NULL) {
+        fprintf(stderr, "Erreur d'allocation mémoire\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fread(texte, 1, taille_fichier, f);
+    texte[taille_fichier] = '\0';
+
+    fclose(f);
+    return texte;
+}
+
+
+int searchPatterns(Trie T, unsigned char *text) {
     int currentNode = 0;
+    int foundCount = 0;
     for (int i = 0; text[i] != '\0'; i++) {
         while (currentNode != -1 && T->transition[hash(text[i], currentNode)] == NULL) {
             currentNode = T->suffixLink[currentNode];
@@ -139,20 +196,47 @@ void searchPatterns(Trie T, unsigned char *text) {
         int outputNode = currentNode;
         while (outputNode != -1) {
             if (T->finite[outputNode]) {
-                printf("Pattern found at index %d\n", i);
+                foundCount++;
             }
             outputNode = T->outputLink[outputNode];
         }
     }
+    return foundCount;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <patterns_file> <text_file>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
     Trie T = createTrieHash(1000);
-    insertPattern(T, (unsigned char *)"he");
-    insertPattern(T, (unsigned char *)"she");
-    insertPattern(T, (unsigned char *)"his");
-    insertPattern(T, (unsigned char *)"hers");
+
+    // Lire les mots à partir du fichier
+    int nombreMots;
+    char **patterns; 
+
+    patterns = extraire_mots_fichier(argv[1], &nombreMots);
+
+    // Insérer les mots dans le Trie
+    for (int i = 0; i < nombreMots; i++) {
+        insertPattern(T, (unsigned char *)patterns[i]);
+        free(patterns[i]); // Free each pattern after insertion
+    }
+    free(patterns); // Free the array of patterns
+
+    // Construire les liens de suffixe
     buildSuffixLinks(T);
-    searchPatterns(T, (unsigned char *)"ahishers");
+
+    // Lire le texte à partir du fichier
+    char *text;
+    text = lire_texte_fichier(argv[2]);
+
+    // Rechercher les mots dans le texte
+    int foundCount = searchPatterns(T, (unsigned char *)text);
+    printf("\n nombre de mot trouve : %d\n", foundCount);
+
+    free(text); // Free the text after searching
+
     return 0;
 }
