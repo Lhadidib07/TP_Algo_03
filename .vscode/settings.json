@@ -1,4 +1,6 @@
 {
-    "C_Cpp.dimInactiveRegions": false,
-    "C_Cpp.errorSquiggles": "disabled"
+    "files.associations": {
+        "trie_matrice.h": "c",
+        "trie_hashage.h": "c"
+    }
 }

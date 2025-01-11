@@ -1,31 +1,42 @@
+# Compilateur et options de compilation
+CC = gcc
+CFLAGS = -std=c99 -Wall -Wextra -g -Iinclude
+
 # Répertoires
-SRC_DIR = source
-INC_DIR = include
+SRC_DIR = src
+INCLUDE_DIR = include
+
+# Exécutables
+EXEC_HACHAGE = ac-hachage
+EXEC_MATRICE = ac-matrice
 
 # Fichiers sources et objets
-SRC_FILES = $(SRC_DIR)/ahoCorasick.c $(SRC_DIR)/file_d_attente.c $(SRC_DIR)/trie_matrice.c $(SRC_DIR)/trie.c $(SRC_DIR)/main.c
-OBJ_FILES = $(SRC_FILES:.c=.o)
+SRC_HACHAGE = $(SRC_DIR)/main.c $(SRC_DIR)/aho_corasick_hashage.c $(SRC_DIR)/trie_hashage.c
+OBJ_HACHAGE = $(SRC_HACHAGE:.c=.o)
 
-# Nom de l'exécutable
-EXEC = ac_matrice
+SRC_MATRICE = $(SRC_DIR)/main.c $(SRC_DIR)/aho_corasick_matrice.c $(SRC_DIR)/trie_matrice.c
+OBJ_MATRICE = $(SRC_MATRICE:.c=.o)
 
-# Drapeaux de compilation
-CFLAGS = -Wall -I$(INC_DIR) -g -std=c99
+# Cibles par défaut : pour utiliser la méthode matrice ou hachage
+# La macro -DMATRIX ou -DHASHING est définie ici en fonction de la cible
 
-# Règle par défaut pour compiler l'exécutable
-all: $(EXEC)
+# Règle pour construire ac-hachage
+$(EXEC_HACHAGE): CFLAGS += -DHASHING
+$(EXEC_HACHAGE): $(OBJ_HACHAGE)
+	$(CC) $(CFLAGS) $(OBJ_HACHAGE) -o $(EXEC_HACHAGE)
 
-# Règle pour créer l'exécutable à partir des fichiers objets
-$(EXEC): $(OBJ_FILES)
-	$(CC) $(OBJ_FILES) -o $(EXEC)
+# Règle pour construire ac-matrice
+$(EXEC_MATRICE): CFLAGS += -DMATRIX
+$(EXEC_MATRICE): $(OBJ_MATRICE)
+	$(CC) $(CFLAGS) $(OBJ_MATRICE) -o $(EXEC_MATRICE)
 
-# Règle pour compiler les fichiers .c en fichiers .o
+# Règle générique pour compiler les fichiers objets
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Règle pour nettoyer les fichiers objets et l'exécutable
-clean:
-	rm -f $(OBJ_FILES) $(EXEC)
+# Cible par défaut (construire tout)
+all: $(EXEC_HACHAGE) $(EXEC_MATRICE)
 
-# Règle pour recompiler tout (force la reconstruction)
-rebuild: clean all
+# Nettoyage
+clean:
+	rm -f $(SRC_DIR)/*.o $(EXEC_HACHAGE) $(EXEC_MATRICE)
