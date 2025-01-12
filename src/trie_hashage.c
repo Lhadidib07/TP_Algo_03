@@ -52,3 +52,4 @@ void insertPattern(Trie T, unsigned char *pattern) {
     }
     T->finite[currentNode] = 1;
 }
+

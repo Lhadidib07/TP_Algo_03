@@ -12,6 +12,7 @@ typedef struct _trie {
     char *finite;        // Tableau des états terminaux
 } Trie;
 
+
 // Prototypes des fonctions relatives au Trie
 void createTrie(Trie *trie);
 void insertInTrie(Trie *trie, const char *word);

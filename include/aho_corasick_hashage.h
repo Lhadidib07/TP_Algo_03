@@ -3,20 +3,12 @@
 
 #include "trie_hashage.h"
 
-typedef struct {
-    int *queue;
-    int front;
-    int back;
-    int size;
-} Queue;
-
-// Déclaration des fonctions pour la gestion de la file circulaire
-void initQueue(Queue *q, int size);
-void enfiler(Queue *q, int value);
-int defiler(Queue *q);
-
-// Autres déclarations de fonctions
+void initialiserFile(int **queue, int *queueStart, int *queueEnd, int maxNode);
+void mettreAJourLienSortie(Trie T, int targetNode);
+int trouverTransition(Trie T, int currentNode, int letter);
+void mettreAJourLienSuffixe(Trie T, int currentNode, int targetNode, int letter);
+void traiterNoeud(Trie T, int *queue, int *queueStart, int *queueEnd, int currentNode);
+void traiterFile(Trie T, int *queue, int *queueStart, int *queueEnd);
 void buildSuffixLinks(Trie T);
 int searchPatterns(Trie T, unsigned char *text);
-
 #endif

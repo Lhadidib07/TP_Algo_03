@@ -1,4 +1,4 @@
-# Compilateur et options de compilation
+# Compilateur et options
 CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra -g -Iinclude
 
@@ -7,36 +7,37 @@ SRC_DIR = src
 INCLUDE_DIR = include
 
 # Exécutables
-EXEC_HACHAGE = ac-hachage
-EXEC_MATRICE = ac-matrice
+EXEC = ac-matrice ac-hachage genere-mots genere-texte
 
-# Fichiers sources et objets
-SRC_HACHAGE = $(SRC_DIR)/main.c $(SRC_DIR)/aho_corasick_hashage.c $(SRC_DIR)/trie_hashage.c
-OBJ_HACHAGE = $(SRC_HACHAGE:.c=.o)
+# Sources pour chaque exécutable
+SRC_AC_MATRICE = $(SRC_DIR)/main_matrice.c $(SRC_DIR)/trie_matrice.c $(SRC_DIR)/aho_corasick_matrice.c
+SRC_AC_HACHAGE = $(SRC_DIR)/main_hashage.c $(SRC_DIR)/trie_hashage.c $(SRC_DIR)/aho_corasick_hashage.c
+SRC_GENERE_MOTS = genere-mots.c
+SRC_GENERE_TEXTE = genere-texte.c
 
-SRC_MATRICE = $(SRC_DIR)/main.c $(SRC_DIR)/aho_corasick_matrice.c $(SRC_DIR)/trie_matrice.c
-OBJ_MATRICE = $(SRC_MATRICE:.c=.o)
+# Cible par défaut : génère tous les exécutables
+all: $(EXEC)
 
-# Cibles par défaut : pour utiliser la méthode matrice ou hachage
-# La macro -DMATRIX ou -DHASHING est définie ici en fonction de la cible
+# Règles pour ac-matrice
+ac-matrice: $(SRC_AC_MATRICE)
+	$(CC) $(CFLAGS) $^ -o $@
 
-# Règle pour construire ac-hachage
-$(EXEC_HACHAGE): CFLAGS += -DHASHING
-$(EXEC_HACHAGE): $(OBJ_HACHAGE)
-	$(CC) $(CFLAGS) $(OBJ_HACHAGE) -o $(EXEC_HACHAGE)
+# Règles pour ac-hachage
+ac-hachage: $(SRC_AC_HACHAGE)
+	$(CC) $(CFLAGS) $^ -o $@
 
-# Règle pour construire ac-matrice
-$(EXEC_MATRICE): CFLAGS += -DMATRIX
-$(EXEC_MATRICE): $(OBJ_MATRICE)
-	$(CC) $(CFLAGS) $(OBJ_MATRICE) -o $(EXEC_MATRICE)
+# Règles pour genere-mots
+genere-mots: $(SRC_GENERE_MOTS)
+	$(CC) $(CFLAGS) $^ -o $@
 
-# Règle générique pour compiler les fichiers objets
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+# Règles pour genere-texte
+genere-texte: $(SRC_GENERE_TEXTE)
+	$(CC) $(CFLAGS) $^ -o $@
 
-# Cible par défaut (construire tout)
-all: $(EXEC_HACHAGE) $(EXEC_MATRICE)
-
-# Nettoyage
+# Nettoyage des fichiers objets et exécutables
 clean:
-	rm -f $(SRC_DIR)/*.o $(EXEC_HACHAGE) $(EXEC_MATRICE)
+	rm -f $(EXEC) 
+
+# Nettoyage complet
+mrproper: clean
+	rm -f texte3.txt mots3.txt res-ac-matrice res-ac-hachage

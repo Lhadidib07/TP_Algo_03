@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ALPHABET_SIZE 256
 // Initialisation de la file circulaire
 void initQueue(Queue *q, int size) {
     q->queue = (int *)malloc(size * sizeof(int));
@@ -14,7 +15,7 @@ void initQueue(Queue *q, int size) {
 // Enfiler (ajouter un élément dans la file)
 void enfiler(Queue *q, int value) {
     q->queue[q->back] = value;
-    q->back = (q->back + 1) % q->size;
+    q->back = (q->back + 1) % q->size; // pour garantir que notre file ai toujours une taille de 0 a size-1
 }
 
 // Défiler (retirer un élément de la file)
@@ -49,7 +50,6 @@ int searchText(Trie *trie, const char *text) {
         while (tempNode != 0) {
             if (trie->finite[tempNode]) {
                 count++;
-                break; // Compter cette occurrence et continuer la recherche
             }
             tempNode = trie->fail[tempNode];  // Suivre le lien "fail" pour vérifier les occurrences
         }
@@ -59,7 +59,6 @@ int searchText(Trie *trie, const char *text) {
 
     return count;
 }
-
 // Fonction pour construire les liens suffixes (fail links)
 
 
@@ -81,10 +80,14 @@ void buildSuffixLinks(Trie *trie) {
         for (int i = 0; i < ALPHABET_SIZE; i++) {
             if (trie->transition[currentNode][i] != -1) {
                 int failState = trie->fail[currentNode];
-                while (trie->transition[failState][i] == -1) {
+                while (trie->transition[failState][i] == -1 && failState != 0) {
                     failState = trie->fail[failState];
                 }
-                trie->fail[trie->transition[currentNode][i]] = trie->transition[failState][i];
+                if (trie->transition[failState][i] != -1) {
+                    trie->fail[trie->transition[currentNode][i]] = trie->transition[failState][i];
+                } else {
+                    trie->fail[trie->transition[currentNode][i]] = 0;
+                }
                 enfiler(&q, trie->transition[currentNode][i]);
             }
         }
