@@ -4,20 +4,25 @@
 
 void initialiserFile(int **queue, int *queueStart, int *queueEnd, int maxNode) {
     *queue = (int *)malloc(maxNode * sizeof(int));
+    if (*queue == NULL) {
+        perror("Memory allocation failed for queue");
+        exit(EXIT_FAILURE);
+    }
     *queueStart = 0;
     *queueEnd = 0;
-    (*queue)[(*queueEnd)++] = 0;
+    (*queue)[(*queueEnd)++] = 0; // Ajouter la racine (nœud 0)
 }
 
 void mettreAJourLienSortie(Trie T, int targetNode) {
-    if (T->finite[T->suffixLink[targetNode]]) {
-        T->outputLink[targetNode] = T->suffixLink[targetNode];
+    int suffixNode = T->suffixLink[targetNode];
+    if (T->finite[suffixNode]) {
+        T->outputLink[targetNode] = suffixNode;
     } else {
-        T->outputLink[targetNode] = T->outputLink[T->suffixLink[targetNode]];
+        T->outputLink[targetNode] = T->outputLink[suffixNode];
     }
 }
 
-int trouverTransition(Trie T, int currentNode, int letter) {
+int trouverTransition(Trie T, int currentNode, unsigned char letter) {
     List *transition = T->transition[hash(letter, currentNode)];
     while (transition != NULL) {
         if (transition->letter == letter) {
@@ -25,61 +30,48 @@ int trouverTransition(Trie T, int currentNode, int letter) {
         }
         transition = transition->next;
     }
-    return -1;
+    return -1; // Pas de transition trouvée
 }
 
-void mettreAJourLienSuffixe(Trie T, int currentNode, int targetNode, int letter) {
-    // Si le noeud courant est la racine alors le lien de suffixe est 0
+void mettreAJourLienSuffixe(Trie T, int currentNode, int targetNode, unsigned char letter) {
     if (currentNode == 0) {
         T->suffixLink[targetNode] = 0;
     } else {
-        // Sinon, chercher le lien de suffixe du noeud courant
         int suffixNode = T->suffixLink[currentNode];
         while (suffixNode != -1) {
             int suffixTarget = trouverTransition(T, suffixNode, letter);
             if (suffixTarget != -1) {
                 T->suffixLink[targetNode] = suffixTarget;
-                break;
+                return;
             }
             suffixNode = T->suffixLink[suffixNode];
         }
-        if (suffixNode == -1) {
-            T->suffixLink[targetNode] = 0;
-        }
+        T->suffixLink[targetNode] = 0;
     }
 }
 
-
-void traiterNoeud(Trie T, int *queue, int *queueStart, int *queueEnd, int currentNode) {
-    // Parcourir les transitions du noeud
-    for (int i = 0; i < HASH_SIZE; i++) { // parcourir toutes la table de hachage 
-        int targetNode = trouverTransition(T, currentNode, i);
-        // Si la transition existe alors mettre à jour les liens de suffixe et de sortie 
-        if (targetNode != -1) {
-            mettreAJourLienSuffixe(T, currentNode, targetNode, i);
-            mettreAJourLienSortie(T, targetNode);
-            queue[(*queueEnd)++] = targetNode;
+void traiterNoeud(Trie T, int *queue, int *queueEnd, int currentNode) {
+    List *transition;
+    for (int i = 0; i < HASH_SIZE; i++) {
+        transition = T->transition[i];
+        while (transition != NULL) {
+            if (transition->startNode == currentNode) {
+                int targetNode = transition->targetNode;
+                mettreAJourLienSuffixe(T, currentNode, targetNode, transition->letter);
+                mettreAJourLienSortie(T, targetNode);
+                queue[(*queueEnd)++] = targetNode;
+            }
+            transition = transition->next;
         }
     }
 }
-
-
 
 void traiterFile(Trie T, int *queue, int *queueStart, int *queueEnd) {
-
-    // Parcourir la file
-    // tant que la file n'est pas fini
     while (*queueStart < *queueEnd) {
-        // Prendre le premier noeud de la file
         int currentNode = queue[(*queueStart)++];
-        // Traiter le noeud , mettre à jour les liens 
-        traiterNoeud(T, queue, queueStart, queueEnd, currentNode);
+        traiterNoeud(T, queue, queueEnd, currentNode);
     }
 }
-
-
-
-
 
 void buildSuffixLinks(Trie T) {
     int *queue;
@@ -93,13 +85,13 @@ int searchPatterns(Trie T, unsigned char *text) {
     int currentNode = 0;
     int foundCount = 0;
     for (int i = 0; text[i] != '\0'; i++) {
-        while (currentNode != -1 && T->transition[hash(text[i], currentNode)] == NULL) {
+        while (currentNode != -1 && trouverTransition(T, currentNode, text[i]) == -1) {
             currentNode = T->suffixLink[currentNode];
         }
         if (currentNode == -1) {
             currentNode = 0;
         } else {
-            currentNode = T->transition[hash(text[i], currentNode)]->targetNode;
+            currentNode = trouverTransition(T, currentNode, text[i]);
         }
         int outputNode = currentNode;
         while (outputNode != -1) {

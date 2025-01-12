@@ -1,0 +1,50 @@
+Début de l'exécution : Sun Jan 12 18:46:04 CET 2025
+Exécution : Algorithme=hachage, Texte=./text/texte_2.txt, Mots=./mots/mots_5_15_2.txt
+Résultat : Nombre de mots trouvés : 0, Temps d'exécution : 288 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_2.txt, Mots=./mots/mots_5_15_2.txt
+Résultat : , Temps d'exécution : 11 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_2.txt, Mots=./mots/mots_15_30_2.txt
+Résultat : Nombre de mots trouvés : 0, Temps d'exécution : 298 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_2.txt, Mots=./mots/mots_15_30_2.txt
+Résultat : , Temps d'exécution : 12 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_2.txt, Mots=./mots/mots_30_60_2.txt
+Résultat : Nombre de mots trouvés : 0, Temps d'exécution : 274 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_2.txt, Mots=./mots/mots_30_60_2.txt
+Résultat : , Temps d'exécution : 12 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_4.txt, Mots=./mots/mots_5_15_4.txt
+Résultat : , Temps d'exécution : 363 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_4.txt, Mots=./mots/mots_5_15_4.txt
+Résultat : , Temps d'exécution : 13 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_4.txt, Mots=./mots/mots_15_30_4.txt
+Résultat : , Temps d'exécution : 360 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_4.txt, Mots=./mots/mots_15_30_4.txt
+Résultat : , Temps d'exécution : 12 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_4.txt, Mots=./mots/mots_30_60_4.txt
+Résultat : , Temps d'exécution : 343 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_4.txt, Mots=./mots/mots_30_60_4.txt
+Résultat : , Temps d'exécution : 13 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_20.txt, Mots=./mots/mots_5_15_20.txt
+Résultat : , Temps d'exécution : 666 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_20.txt, Mots=./mots/mots_5_15_20.txt
+Résultat : , Temps d'exécution : 13 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_20.txt, Mots=./mots/mots_15_30_20.txt
+Résultat : , Temps d'exécution : 675 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_20.txt, Mots=./mots/mots_15_30_20.txt
+Résultat : , Temps d'exécution : 11 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_20.txt, Mots=./mots/mots_30_60_20.txt
+Résultat : , Temps d'exécution : 686 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_20.txt, Mots=./mots/mots_30_60_20.txt
+Résultat : , Temps d'exécution : 13 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_70.txt, Mots=./mots/mots_5_15_70.txt
+Résultat : , Temps d'exécution : 37 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_70.txt, Mots=./mots/mots_5_15_70.txt
+Résultat : , Temps d'exécution : 13 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_70.txt, Mots=./mots/mots_15_30_70.txt
+Résultat : , Temps d'exécution : 38 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_70.txt, Mots=./mots/mots_15_30_70.txt
+Résultat : , Temps d'exécution : 12 ms
+Exécution : Algorithme=hachage, Texte=./text/texte_70.txt, Mots=./mots/mots_30_60_70.txt
+Résultat : , Temps d'exécution : 36 ms
+Exécution : Algorithme=matrice, Texte=./text/texte_70.txt, Mots=./mots/mots_30_60_70.txt
+Résultat : , Temps d'exécution : 11 ms
+Fin de l'exécution : Sun Jan 12 18:46:08 CET 2025

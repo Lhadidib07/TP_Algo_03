@@ -58,10 +58,24 @@ void insertInTrie(Trie *trie, const char *word) {
     while (*word) {
         unsigned char c = (unsigned char)(*word);
         if (trie->transition[currentNode][c] == -1) {
+            if (trie->nextNode >= trie->maxNode) {
+                fprintf(stderr, "Erreur : dépassement de la capacité du Trie\n");
+                exit(EXIT_FAILURE);
+            }
             trie->transition[currentNode][c] = trie->nextNode++;
         }
         currentNode = trie->transition[currentNode][c];
         word++;
     }
     trie->finite[currentNode] = 1;  // Marquer l'état comme terminal
+}
+
+// Libérer la mémoire allouée pour le Trie
+void freeTrie(Trie *trie) {
+    for (int i = 0; i < trie->maxNode; i++) {
+        free(trie->transition[i]);
+    }
+    free(trie->transition);
+    free(trie->fail);
+    free(trie->finite);
 }

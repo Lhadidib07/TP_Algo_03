@@ -1,0 +1,7 @@
+Algorithme,Min_Length,Max_Length,Alphabet,Execution_Time_ms
+hachage,5,15,4,363,
+matrice,5,15,4,13,
+hachage,15,30,4,360,
+matrice,15,30,4,12,
+hachage,30,60,4,343,
+matrice,30,60,4,13,

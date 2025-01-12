@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 
     // Recherche des motifs dans le texte
     int foundCount = searchPatterns(T, (unsigned char *)text);
-    printf("\nNombre de mots trouvés : %d\n", foundCount);
+    printf("Nombre de mots trouvés : %d\n", foundCount);
 
     return 0;
 }

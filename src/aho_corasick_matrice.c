@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define ALPHABET_SIZE 256
+
 // Initialisation de la file circulaire
 void initQueue(Queue *q, int size) {
     q->queue = (int *)malloc(size * sizeof(int));
@@ -34,11 +35,8 @@ int searchText(Trie *trie, const char *text) {
         unsigned char c = (unsigned char)(*text);
 
         // Suivre les transitions et les fail states
-        while (trie->transition[currentNode][c] == -1) {
+        while (trie->transition[currentNode][c] == -1 && currentNode != 0) {
             currentNode = trie->fail[currentNode];  // Suivre le lien "fail"
-            if (currentNode == 0) {
-                break;  // Retour à la racine si aucun état valide
-            }
         }
 
         if (trie->transition[currentNode][c] != -1) {
@@ -59,9 +57,8 @@ int searchText(Trie *trie, const char *text) {
 
     return count;
 }
+
 // Fonction pour construire les liens suffixes (fail links)
-
-
 void buildSuffixLinks(Trie *trie) {
     Queue q;
     initQueue(&q, trie->maxNode);
@@ -71,6 +68,8 @@ void buildSuffixLinks(Trie *trie) {
         if (trie->transition[0][i] != -1) {
             trie->fail[trie->transition[0][i]] = 0;
             enfiler(&q, trie->transition[0][i]);
+        } else {
+            trie->transition[0][i] = 0; // Assurez-vous que toutes les transitions de la racine sont initialisées
         }
     }
 
@@ -89,6 +88,8 @@ void buildSuffixLinks(Trie *trie) {
                     trie->fail[trie->transition[currentNode][i]] = 0;
                 }
                 enfiler(&q, trie->transition[currentNode][i]);
+            } else {
+                trie->transition[currentNode][i] = trie->transition[trie->fail[currentNode]][i]; // Suivre le lien "fail" pour les transitions manquantes
             }
         }
     }
