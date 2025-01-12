@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 void initialiserFile(int **queue, int *queueStart, int *queueEnd, int maxNode) {
+    // créer une file vide
     *queue = (int *)malloc(maxNode * sizeof(int));
     if (*queue == NULL) {
         perror("Memory allocation failed for queue");
@@ -35,17 +36,22 @@ int trouverTransition(Trie T, int currentNode, unsigned char letter) {
 
 void mettreAJourLienSuffixe(Trie T, int currentNode, int targetNode, unsigned char letter) {
     if (currentNode == 0) {
+        // Si le nœud courant est la racine, le lien de suffixe du nœud cible pointe vers la racine
         T->suffixLink[targetNode] = 0;
     } else {
+        // Commencer par le lien de suffixe du nœud courant
         int suffixNode = T->suffixLink[currentNode];
         while (suffixNode != -1) {
             int suffixTarget = trouverTransition(T, suffixNode, letter);
             if (suffixTarget != -1) {
+                // Si une transition est trouvée, mettre à jour le lien de suffixe du nœud cible
                 T->suffixLink[targetNode] = suffixTarget;
                 return;
             }
+             // Passer au lien de suffixe suivant
             suffixNode = T->suffixLink[suffixNode];
         }
+        // Si aucune transition n'est trouvée, le lien de suffixe du nœud cible pointe vers la racine
         T->suffixLink[targetNode] = 0;
     }
 }
@@ -54,11 +60,14 @@ void traiterNoeud(Trie T, int *queue, int *queueEnd, int currentNode) {
     List *transition;
     for (int i = 0; i < HASH_SIZE; i++) {
         transition = T->transition[i];
+        // Parcourir la liste des transitions pour chaque état
         while (transition != NULL) {
+            // Si la transition part du nœud couran
             if (transition->startNode == currentNode) {
                 int targetNode = transition->targetNode;
                 mettreAJourLienSuffixe(T, currentNode, targetNode, transition->letter);
                 mettreAJourLienSortie(T, targetNode);
+                // Ajouter le nœud cible à la file
                 queue[(*queueEnd)++] = targetNode;
             }
             transition = transition->next;
